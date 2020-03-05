@@ -1,19 +1,19 @@
-// Cria uma instância do objeto provedor do Google
+// Cria uma instÃ¢ncia do objeto provedor do Google
 var provider = new firebase.auth.GoogleAuthProvider();
 
 // Usa o idioma do navegador no Firebase
 firebase.auth().useDeviceLanguage();
 
-// Variável global com os dados do usuário
+// VariÃ¡vel global com os dados do usuÃ¡rio
 var user = {};
 
-// Roda a aplicação ao carregar o documento
+// Roda a aplicaÃ§Ã£o ao carregar o documento
 $(document).ready(authApp);
 
-// Aplcação principal --> Observar eventos
+// AplcaÃ§Ã£o principal --> Observar eventos
 function authApp() {
 
-    // Observador de usuários
+    // Observador de usuÃ¡rios
     firebase.auth().onAuthStateChanged(userStatus);
 
     // Monitora cliques no login
@@ -24,40 +24,50 @@ function authApp() {
 
 }
 
-// Altera o status do usuário
+// Altera o status do usuÃ¡rio
 function userStatus(userData) {
 
     if (userData) {
 
-        // Fazer isso quando alguém está logado
+        // Fazer isso quando alguÃ©m estÃ¡ logado
         isLoged(userData);
 
     } else {
 
-        // Fazer isso quando não tem usuário logado
+        // Fazer isso quando nÃ£o tem usuÃ¡rio logado
         notLoged();
 
     }
 }
 
-// Faz login do usuário
+// Faz login do usuÃ¡rio
 function Login() {
 
     // Login usando pop-up
     firebase.auth().signInWithPopup(provider);
+
+    // Redirecionar home
+    $.get('pages/home.html', '', function(data) {
+        $('#main').html(data);
+    });
 
     // (opcional) Oculta o menu principal
     //hideMenu();
 
 }
 
-// Faz logout do usuário
+// Faz logout do usuÃ¡rio
 function Logout() {
 
     if (confirm('Tem certeza que deseja sair?')) {
 
         // Faz logout
         firebase.auth().signOut();
+
+        // Redirecionar home
+        $.get('pages/home.html', '', function(data) {
+            $('#main').html(data);
+        });
 
         // (opcional) Oculta o menu principal
         //hideMenu();
@@ -68,13 +78,13 @@ function Logout() {
 
 function isLoged(userData) {
 
-    // Atribuir dados ao usuário
+    // Atribuir dados ao usuÃ¡rio
     user = userData;
 
-    // Limita o nome do usuário
+    // Limita o nome do usuÃ¡rio
     var displayName = user.displayName.substr(0, 12);
 
-    // Mostra a opção de logout
+    // Mostra a opÃ§Ã£o de logout
     var out = `
 <img src="${user.photoURL}" alt="${user.displayName}">
 <span>&nbsp;${displayName}</span>        
@@ -84,14 +94,14 @@ function isLoged(userData) {
     // Atualiza o DOM
     $('#usermenu').html(out);
 
-    // Mostrar botão perfil no menu principal
+    // Mostrar botÃ£o perfil no menu principal
     $('#perfil').css('display', 'block');
 
 }
 
 function notLoged() {
 
-    // Mostra opção de login
+    // Mostra opÃ§Ã£o de login
     var out = `
 <i class="fas fa-user-circle fa-fw"></i>
 <span>&nbsp;Logue-se...</span>
@@ -101,7 +111,7 @@ function notLoged() {
     // Atualiza o DOM
     $('#usermenu').html(out);
 
-    // Ocultar botão perfil no menu principal
+    // Ocultar botÃ£o perfil no menu principal
     $('#perfil').css('display', 'none');
 
     // Carrega o documento
